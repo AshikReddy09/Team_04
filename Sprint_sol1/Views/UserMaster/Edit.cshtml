@@ -1,0 +1,63 @@
+﻿@model UserMaster
+
+@{
+    Layout = "_Layout_Alt1";
+}
+<html>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    </head>
+    <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-uppercase text-center"> Edit User </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 border-1 border">
+                <form method="post" asp-action="Edit" asp-route-id="@Model.UserID" enctype="application/x-www-form-urlencoded">
+                    <div class="mb-3">
+                        <label asp-for="@Model.UserID" class="form-label"></label>
+                        <input asp-for="@Model.UserID" class="form-control" readonly />
+                        <span asp-validation-for="@Model.UserID" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.UserName" class="form-label"></label>
+                        <input asp-for="@Model.UserName" class="form-control" />
+                        <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.UserPassword" class="form-label"></label>
+                        <input asp-for="@Model.UserPassword" class="form-control" />
+                        <span asp-validation-for="@Model.UserPassword" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.UserType" class="form-label"></label>
+                        <input asp-for="@Model.UserType" class="form-control" />
+                        <span asp-validation-for="@Model.UserType" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <a asp-controller="UserMaster" asp-action="GetUsers" class="btn btn-danger">Back</a>
+                        <button type="submit" class="btn btn-warning">Update</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dis<a href=" c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml">c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml</a>t/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    </body>
+</html>

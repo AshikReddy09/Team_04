@@ -1,0 +1,96 @@
+﻿@model List<GradeMaster>
+
+@{
+    Layout = "_Layout_Alt1";
+}
+<html>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    </head>
+    <body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6 text-uppercase">
+                <h1> Grades List </h1>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="@Url.Action("Dashboard", "AdminDashboard")" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left-circle"></i> Back
+                </a>
+                <a asp-controller="GradeMaster" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create</a>
+            </div>
+        </div>
+        <hr />
+        @if (Model != null && Model.Any())
+        {
+            <table id="table" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">Grade Code</th>
+                        <th class="text-center">Description</th>
+                        <th class="text-center">Min Salary </th>
+                        <th class="text-center">Max Salary </th>
+
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Grade_Code</td>
+                            <td>@item.Description</td>
+                            <td>@item.Min_Salary</td>
+                            <td>@item.Max_Salary</td>
+                            <td class="d-flex align-items-center justify-content-center">
+                                <div class="w-75 btn-group" role="group">
+                                    <a asp-controller="GradeMaster" asp-action="Details" asp-route-id="@item.Grade_Code"
+                                       class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Details">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <a asp-controller="GradeMaster" asp-action="Edit" asp-route-id="@item.Grade_Code"
+                                       class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-controller="GradeMaster" asp-action="Delete" asp-route-id="@item.Grade_Code"
+                                       class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center text-uppercase text-warning pt-4">No Records found </h2>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+
+    @section Scripts {
+        <script>
+            $('.table').DataTable();
+        </script>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dis<a href=" c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml">c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml</a>t/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    </body>
+</html>

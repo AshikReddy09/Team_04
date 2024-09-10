@@ -1,0 +1,84 @@
+﻿@model Sprint_sol1.Models.Employee
+
+@{
+    ViewData["Title"] = "Employee Details";
+    Layout = "_Layout";
+}
+
+<html>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        /* Employee Details Styling */
+        .employee-details .list-group-item {
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: #f8f9fa; /* Light background for better readability */
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        /* Styling for the employee photo */
+        .rounded {
+            border-radius: 50%;
+        }
+
+        /* Font style for employee name and designation */
+        h3 {
+            font-weight: bold;
+        }
+
+        p em {
+            font-size: 1.1rem;
+            color: gray;
+        }
+
+        /* Employee Details Box */
+        .employee-details {
+            background-color: #ffffff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    </head>
+    <body>
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4">Welcome @Model.Emp_First_Name</h1>
+        </div>
+        <div class="text-center mt-4">
+            <img src="https://via.placeholder.com/150" class="rounded" alt="Employee Photo">
+            <h3 class="mt-3">@Model.Emp_First_Name @Model.Emp_Last_Name</h3>
+            <p><em>@Model.Emp_Designation</em></p>
+        </div>
+
+        <!-- Employee Details -->
+        <div class="employee-details mt-4">
+            <h2>Employee Details</h2>
+            <ul class="list-group">
+                <li class="list-group-item">Employee Id: @Model.Emp_ID</li>
+                <li class="list-group-item">First Name: @Model.Emp_First_Name</li>
+                <li class="list-group-item">Last Name: @Model.Emp_Last_Name</li>
+                <li class="list-group-item">Date Of Birth: @Model.Emp_Date_of_Birth.ToString("dd/MM/yyyy")</li>
+                <li class="list-group-item">Date Of Joining: @Model.Emp_Date_of_Joining.ToString("dd/MM/yyyy")</li>
+                <li class="list-group-item">Department Id: @Model.Emp_Dept_ID</li>
+                <li class="list-group-item">Grade: @Model.Emp_Grade</li>
+                <li class="list-group-item">Designation: @Model.Emp_Designation</li>
+                <li class="list-group-item">Basic: @Model.Emp_Basic.ToString("C")</li>
+                <li class="list-group-item">Gender: @Model.Emp_Gender</li>
+                <li class="list-group-item">Marital Status: @Model.Emp_Marital_Status</li>
+                <li class="list-group-item">Home Address: @Model.Emp_Home_Address</li>
+                <li class="list-group-item">Contact Number: @Model.Emp_Contact_Num</li>
+            </ul>
+        </div>
+    </div>
+    </body>
+</html>
+

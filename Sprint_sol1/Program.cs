@@ -1,36 +1,58 @@
-namespace Sprint_sol1
-{
-    public class Program
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Sprint_sol1.Contracts;
+using Sprint_sol1.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        options.LoginPath = "/AccAdmin/LoginAdmin"; // Default login path
+        options.LogoutPath = "/AccAdmin/Logout"; // Default logout path
+        options.AccessDeniedPath = "/AccAdmin/AccessDenied"; // Access denied path
+    });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("EmployeeOnly", policy => policy.RequireRole("Employee")); // Add a policy for employees if needed
+});
 
-            var app = builder.Build();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>)); // Repository configuration
+builder.Services.AddControllersWithViews();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+var app = builder.Build();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.Run();
-        }
-    }
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication(); // Enable authentication
+app.UseAuthorization();  // Enable authorization
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.Map("/AccessDenied", (context) =>
+{
+    context.Response.Redirect("/Shared/AccessDenied");
+    return Task.CompletedTask;
+});
+
+app.Run();
