@@ -96,10 +96,13 @@
                         <input asp-for="@Model.Emp_Contact_Num" class="form-control" />
                         <span asp-validation-for="@Model.Emp_Contact_Num" class="text-danger"></span>
                     </div>
+
+
                     <div>
                         <a asp-controller="Employee" asp-action="GetEmp" class="btn btn-danger">Back</a>
                         <button type="submit" class="btn btn-success">Create</button>
                     </div>
+
                 </form>
             </div>
 
@@ -111,7 +114,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-</body>
+ </body>
 </html>
 
 

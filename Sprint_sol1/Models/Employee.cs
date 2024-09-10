@@ -78,7 +78,7 @@ namespace Sprint_sol1.Models
         [ForeignKey("Emp_Grade")]
         public virtual GradeMaster? GradeMaster { get; set; }
 
-
+       
         public static ValidationResult ValidateAge(DateTime dob, ValidationContext context)
         {
             var age = DateTime.Now.Year - dob.Year;
