@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     </head>
     <body>
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -21,7 +22,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 border-1 border">
-                <form method="post" asp-action="DeleteUser" asp-route-id="@Model.Grade_Code" enctype="application/x-www-form-urlencoded">
+                <form method="post" asp-action="Delete" asp-route-id="@Model.Grade_Code" enctype="application/x-www-form-urlencoded">
                     <div class="mb-3">
                         <label asp-for="@Model.Grade_Code" class="form-label"></label>
                         <input asp-for="@Model.Grade_Code" class="form-control" readonly />
@@ -43,7 +44,7 @@
 
                     </div>
                     <div class="mb-3">
-                        <a asp-controller="UserMaster" asp-action="GetUsers" class="btn btn-danger">Back</a>
+                        <a asp-controller="GradeMaster" asp-action="GetGrade" class="btn btn-danger">Back</a>
                         <button type="submit" class="btn btn-warning">Delete</button>
                     </div>
                 </form>
