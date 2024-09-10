@@ -1,0 +1,93 @@
+﻿@model List<Employee>
+@{
+    Layout = "_Layout_Alt1";
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6 text-uppercase">
+                <h1> Employees List </h1>
+            </div>
+            <div class="col-md-6">
+                <!-- Back Button -->
+                <a href="@Url.Action("Dashboard", "AdminDashboard")" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left-circle"></i> Back
+                </a>
+                <!-- Create Button -->
+                <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create
+                </a>
+            </div>
+        </div>
+        <hr />
+        @if (Model != null && Model.Any())
+        {
+            <table id="table" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">Emp ID</th>
+                        <th class="text-center">First Name</th>
+                        <th class="text-center">Last Name</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Emp_ID</td>
+                            <td>@item.Emp_First_Name</td>
+                            <td>@item.Emp_Last_Name</td>
+                            <td class="d-flex align-items-center justify-content-center">
+                                <div class="w-75 btn-group" role="group">
+                                    <a asp-controller="Employee" asp-action="Details" asp-route-id="@item.Emp_ID"
+                                       class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Details">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Emp_ID"
+                                       class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-controller="Employee" asp-action="Delete" asp-route-id="@item.Emp_ID"
+                                       class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="text-center text-uppercase text-warning pt-4">No Records found </h2>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @section Scripts {
+        <script>
+            $('.table').DataTable();
+        </script>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

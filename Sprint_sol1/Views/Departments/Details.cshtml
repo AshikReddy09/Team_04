@@ -1,0 +1,57 @@
+﻿@model Department
+
+@{
+    Layout = "_Layout_Alt1";
+}
+<html>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    </head>
+    <body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-uppercase text-center">
+                Department Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="card-text text-uppercase"><strong>Dept Id</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p class="card-text">: @Model.Dept_ID </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="card-text text-uppercase"><strong>Dept Name</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p class="card-text">: @Model.Dept_Name </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <a asp-controller="Departments" asp-action="Index" class="btn btn-danger">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    </body>
+</html>
+

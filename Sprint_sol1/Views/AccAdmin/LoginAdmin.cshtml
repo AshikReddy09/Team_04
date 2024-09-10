@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Login Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px #000;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .login-header img {
+                width: 150px;
+            }
+
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007BFF;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .text-center a {
+            color: #007BFF;
+        }
+
+            .text-center a:hover {
+                color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="/content/images.jpg" alt="logo" />
+                <h4>Login as an Admin</h4>
+            </div>
+            <form asp-controller="AccAdmin" asp-action="LoginAdmin" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="UserName" placeholder="User Name" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="Password" placeholder="Password" required />
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </div>
+                <div class="text-center">
+                    <a href="/Account/ForgotPassword">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

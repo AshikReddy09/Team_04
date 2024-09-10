@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "AdminDashboard";
+    Layout = "_Layout_Alt1";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Management System</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .profile-image img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #007BFF;
+            margin-right: 20px;
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+            .profile-details h2 {
+                margin-top: 0;
+                color: #333;
+            }
+
+            .profile-details p {
+                margin: 5px 0;
+                color: #555;
+            }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="profile-section">
+            <div class="profile-image">
+                <img src="https://via.placeholder.com/150" class="rounded" alt="User Profile" />
+            </div>
+            <div class="profile-details">
+                <h2>Details</h2>
+                <p><strong>Name:</strong> Ashik Reddy</p>
+                <p><strong>Employee ID:</strong> 46371705</p>
+                <p><strong>Email ID:</strong> ashik-venkat.reddy@capgemini.com</p>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a class="btn" asp-area="" asp-controller="Employee" asp-action="GetEmp">Employee</a>
+            <a class="btn" asp-area="" asp-controller="Departments" asp-action="Index">Department</a>
+            <a class="btn" asp-area="" asp-controller="UserMaster" asp-action="GetUsers">User Master</a>
+            <a class="btn" asp-area="" asp-controller="GradeMaster" asp-action="GetGrade">Grade Master</a>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

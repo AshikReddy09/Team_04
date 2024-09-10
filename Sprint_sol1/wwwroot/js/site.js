@@ -9,17 +9,40 @@
     });
 });
 
-function validateForm() {
-    // Example validation function
-    var email = document.getElementById('email').value;
-    var emailError = document.getElementById('emailError');
-    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailPattern.test(email)) {
-        emailError.textContent = 'Please enter a valid email address.';
-        return false;
+
+function validateForm() {
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var message = document.getElementById('message').value;
+    var emailError = document.getElementById('emailError');
+
+    // Simple validation example
+    emailError.textContent = '';
+    var isValid = true;
+
+    if (!name) {
+        alert('Name is required');
+        isValid = false;
     }
 
-    emailError.textContent = '';
-    return true;
+    if (!email) {
+        alert('Email is required');
+        isValid = false;
+    } else if (!validateEmail(email)) {
+        emailError.textContent = 'Invalid email address';
+        isValid = false;
+    }
+
+    if (!message) {
+        alert('Message is required');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function validateEmail(email) {
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
 }

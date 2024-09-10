@@ -1,6 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Contact Us";
-    Layout = "_Layout_Alt2";
 }
 
 <html lang="en">
@@ -103,7 +102,12 @@
     </style>
 </head>
 <body>
-
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
     <div class="container">
         <div class="contact-container">
             <form id="contactForm" action="/Contact/SubmitForm" method="post" onsubmit="return validateForm()">
@@ -140,7 +144,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dis<a href=" c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml">c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml</a>t/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
 </body>
