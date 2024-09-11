@@ -22,6 +22,8 @@ namespace Sprint_sol1.Controllers
         [HttpGet]
         public IActionResult LoginEmp()
         {
+            // Check if there are any messages from TempData
+            ViewBag.Message = TempData["Message"];
             return View();
         }
 
@@ -46,11 +48,12 @@ namespace Sprint_sol1.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
+                    TempData["success"] = "Login successful!";
                     return RedirectToAction("Details", "Employee", new { id = employee.UserID });
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password");
+                    TempData["Message"] = "Incorrect username or password.";
                 }
             }
             return View(model);
@@ -71,6 +74,7 @@ namespace Sprint_sol1.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData["Message"] = "Logged out successfully.";
             return RedirectToAction("LoginEmp");
         }
     }

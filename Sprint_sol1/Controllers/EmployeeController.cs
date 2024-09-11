@@ -10,6 +10,7 @@ using Sprint_sol1.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text;
+using Sprint_sol1.Contracts;
 
 
 namespace Sprint_sol1.Controllers
@@ -18,26 +19,85 @@ namespace Sprint_sol1.Controllers
     [ApiController]
     public class EmployeeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public EmployeeController(ApplicationDbContext context)
+        private readonly IGenericRepository<Employee, string> _repository;
+        private readonly IGenericRepository<Department, int> _departmentRepository;
+        private readonly IGenericRepository<GradeMaster, string> _gradeRepository;
+        private readonly IGenericRepository<UserMaster, string> _UserRepository;
+        public EmployeeController(
+            IGenericRepository<Employee, string> repository,
+            IGenericRepository<Department, int> departmentRepository,
+            IGenericRepository<GradeMaster, string> gradeRepository,
+            IGenericRepository<UserMaster, string> userRepository)
         {
-            _context = context;
+            _repository = repository;
+            _departmentRepository = departmentRepository;
+            _gradeRepository = gradeRepository;
+            _UserRepository = userRepository;
         }
 
-        [Authorize(Roles = "Admin")]
+
         // GET: Employees
         [HttpGet("GetEmp")]
         public async Task<IActionResult> GetEmp()
         {
-            var users = await _context.Employees.ToListAsync();
+            /* var users = await _repository.GetAllAsync();
+             if (users == null || !users.Any())
+             {
+                 ViewBag.AdditionalString = "No employees found.";
+                 return View();
+             }
+
+             // Fetch all departments
+             var departmentIds = users.Select(e => e.Emp_Dept_ID).Distinct().ToList();
+             var departments = await _departmentRepository.GetAllAsync();
+             var departmentDictionary = departments.ToDictionary(d => d.Dept_ID, d => d.Dept_Name);
+
+             // If there are department IDs, get the name of the first department
+             var firstDepartmentId = departmentIds.FirstOrDefault();
+             var departmentName = departmentDictionary.ContainsKey(firstDepartmentId)
+                 ? departmentDictionary[firstDepartmentId]
+                 : "Unknown";
+
+             ViewBag.AdditionalString = $"Department: {departmentName}";
+             ViewBag.Employees = users;
+
+             return View();*/
+
+
+            /*var users = await _repository.GetAllAsync();
             if (users == null)
                 return View();
-            return View(users);
+            return View(users);*/
+            var employees = await _repository.GetAllAsync();
+            if (employees == null || !employees.Any())
+            {
+                return View();
+            }
+
+            // Fetch all departments
+            var departments = await _departmentRepository.GetAllAsync();
+            var departmentDictionary = departments.ToDictionary(d => d.Dept_ID, d => d.Dept_Name);
+
+            // Create a view model with department names included
+            var employeeList = employees.Select(emp => new
+            {
+                emp.Emp_ID,
+                emp.Emp_First_Name,
+                emp.Emp_Last_Name,
+                DepartmentName = departmentDictionary.TryGetValue(emp.Emp_Dept_ID, out var deptName) ? deptName : "Unknown",
+                emp.Emp_Grade,
+                emp.Emp_Gender,
+                emp.Emp_Marital_Status
+            }).ToList();
+
+            // Pass the data to the view
+            return View(employeeList);
+
+
         }
-        //[Authorize(Roles = "Admin")]
+
         // GET: Employees/Details/5
-        [HttpGet("Details/{id}")]
+        [HttpGet("Details")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -45,18 +105,16 @@ namespace Sprint_sol1.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(m => m.Emp_ID == id);
-           
-            var user = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (User.IsInRole("Admin") || user == id)
+            var employee = await _repository.GetByIdAsync(id);
+
+            if (employee == null)
             {
-                return View(employee);
+                return NotFound();
             }
 
-            return RedirectToAction("AccessDenied", "Account");
+            return View(employee);
         }
-        [Authorize(Roles = "Admin")]
+
         // GET: Employees/Create
         [HttpGet("Create")]
         public IActionResult Create()
@@ -64,80 +122,73 @@ namespace Sprint_sol1.Controllers
             return View();
         }
 
-        [HttpGet("ExportToCsv")]
-        public async Task<IActionResult> ExportToCsv()
-        {
-            var employees = await _context.Employees.ToListAsync();
-
-            if (employees == null || !employees.Any())
-            {
-                return NotFound();
-            }
-            var csv = new StringBuilder();
-            csv.AppendLine("Emp ID,First Name,Last Name");
-
-            foreach (var employee in employees)
-            {
-                csv.AppendLine($"{employee.Emp_ID},{employee.Emp_First_Name},{employee.Emp_Last_Name}");
-            }
-
-            var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
-            var stream = new MemoryStream(csvBytes);
-            return File(stream, "text/csv", "employees.csv");
-        }
-
         // POST: Employees/Create
-        [Authorize(Roles = "Admin")]
+
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] Employee employee)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    // Check if UserID exists in UserMasters table
-                    bool userExists = await _context.UserMasters.AnyAsync(u => u.UserID == employee.Emp_ID);
+                    // Check if related data exists
+                    bool userExists = await _UserRepository.ExistsAsync(employee.Emp_ID);
                     if (!userExists)
                     {
                         TempData["ErrorMessage"] = "The specified UserID does not exist.";
                         return View(employee);
                     }
-                    bool DeptExists = await _context.Departments.AnyAsync(d => d.Dept_ID == employee.Emp_Dept_ID);
-                    if (!DeptExists)
+                    /*bool empExists = await _repository.ExistsAsync(employee.Emp_ID);
+                    if (!empExists)
+                    {
+                        TempData["ErrorMessage"] = "The Employee already exist.";
+                        return View(employee);
+                    }*/
+
+                    bool deptExists = await _departmentRepository.ExistsAsync(employee.Emp_Dept_ID);
+                    if (!deptExists)
                     {
                         TempData["ErrorMessage"] = "The specified Dept ID does not exist.";
                         return View(employee);
                     }
-                    bool GradeExists = await _context.GradeMasters.AnyAsync(d => d.Grade_Code == employee.Emp_Grade);
-                    if (!GradeExists)
+
+                    
+                    var grade = await _gradeRepository.GetByIdAsync(employee.Emp_Grade);
+                    if (grade == null)
                     {
                         TempData["ErrorMessage"] = "The specified Grade Code does not exist.";
                         return View(employee);
                     }
+
+                    // Validate salary range
+                    if (employee.Emp_Basic < grade.Min_Salary || employee.Emp_Basic > grade.Max_Salary)
+                    {
+                        TempData["ErrorMessage"] = $"Salary must be between {grade.Min_Salary} and {grade.Max_Salary} for the grade {employee.Emp_Grade}.";
+                        return View(employee);
+                    }
+
                     // Proceed to add employee
-                    _context.Add(employee);
-                    await _context.SaveChangesAsync();
+                    await _repository.AddAsync(employee);
                     TempData["success"] = "Record created successfully";
                     return RedirectToAction(nameof(GetEmp));
                 }
+                catch (Exception ex)
+                {
+                    // Log the error (optional)
+                    TempData["ErrorMessage"] = $"Employee Exists";
+                }
             }
-            catch (DbUpdateException ex)
-            {
-                // Log the error (optional)
-                // _logger.LogError(ex, "An error occurred while saving the department.");
 
-                // Set an error message to be displayed in the view
-                TempData["ErrorMessage"] = "An error occurred while saving the department. The ID may already exist.";
-            }
-            // Add error message if model state is not valid
-            //TempData["ErrorMessage"] = "There was a problem with the data you submitted.";
             return View(employee);
         }
 
 
+
+
+
         // GET: Employees/Edit/5
-        [Authorize(Roles = "Admin")]
+        [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -145,7 +196,7 @@ namespace Sprint_sol1.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _repository.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
@@ -154,28 +205,62 @@ namespace Sprint_sol1.Controllers
         }
 
         // POST: Employees/Edit/5
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Edit")]
+
+        [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Emp_ID,Emp_First_Name,Emp_Last_Name,Emp_Date_of_Birth,Emp_Date_of_Joining,Emp_Dept_ID,Emp_Grade,Emp_Designation,Emp_Basic,Emp_Gender,Emp_Marital_Status,Emp_Home_Address,Emp_Contact_Num")] Employee employee)
+        public async Task<IActionResult> Edit(string id, [FromForm] Employee employee)
         {
             if (id != employee.Emp_ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid )
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    bool deptExists = await _departmentRepository.ExistsAsync(employee.Emp_Dept_ID);
+                    if (!deptExists)
+                    {
+                        TempData["ErrorMessage"] = "The specified Dept ID does not exist.";
+                        return View(employee);
+                    }
+
+
+                    var grade = await _gradeRepository.GetByIdAsync(employee.Emp_Grade);
+                    if (grade == null)
+                    {
+                        TempData["ErrorMessage"] = "The specified Grade Code does not exist.";
+                        return View(employee);
+                    }
+                    if (employee.Emp_Gender != "M" && employee.Emp_Gender != "F")
+                    {
+                        TempData["ErrorMessage"] = "Gender must be 'M' or 'F'.";
+                        return View(employee);
+                    }
+
+                    // Validate marital status
+                    if (employee.Emp_Marital_Status != "Y" && employee.Emp_Marital_Status != "N")
+                    {
+                        TempData["ErrorMessage"] = "Marital Status must be 'Y' or 'N'.";
+                        return View(employee);
+                    }
+
+                    // Validate salary range
+                    if (employee.Emp_Basic < grade.Min_Salary || employee.Emp_Basic > grade.Max_Salary)
+                    {
+                        TempData["ErrorMessage"] = $"Salary must be between {grade.Min_Salary} and {grade.Max_Salary} for the grade {employee.Emp_Grade}.";
+                        return View(employee);
+                    }
+                    
+                    await _repository.UpdateAsync(employee);
                     TempData["warning"] = "Record updated successfully";
+                    return RedirectToAction(nameof(GetEmp));
 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Emp_ID))
+                    if (!await _repository.ExistsAsync(employee.Emp_ID))
                     {
                         return NotFound();
                     }
@@ -184,17 +269,16 @@ namespace Sprint_sol1.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(employee);
+            return NoContent();
         }
 
         // GET: Employees/Delete/5
-        [Authorize(Roles = "Admin")]
         [HttpGet("Delete/{id}")]
         public async Task<ActionResult<UserMaster>> Delete(string id)
         {
-            var Empl = await _context.Employees.FindAsync(id);
+            var Empl = await _repository.GetByIdAsync(id);
 
             if (Empl == null)
             {
@@ -203,33 +287,81 @@ namespace Sprint_sol1.Controllers
 
             return View(Empl);
         }
+
         // POST: Employees/Delete/5
-        [Authorize(Roles = "Admin")]
         [HttpPost("DeleteEmp/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEmp(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var emp = await _repository.GetByIdAsync(id);
+            if (emp == null)
             {
-                _context.Employees.Remove(employee);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
             TempData["error"] = "Record deleted successfully";
-
             return RedirectToAction(nameof(GetEmp));
         }
-        private bool EmployeeExists(string id)
+
+        [HttpGet("GetTable")]
+        public async Task<IActionResult> GetTable()
         {
-            return _context.Employees.Any(e => e.Emp_ID == id);
+            var users = await _repository.GetAllAsync();
+            if (users == null)
+                return View();
+            return View(users);
         }
 
-        private bool DepartmentExists(int id)
+        [HttpGet("ExportToCsv")]
+        public async Task<IActionResult> ExportToCsv()
         {
-            return _context.Departments.Any(e => e.Dept_ID == id);
-        }
+            var employees = await _repository.GetAllAsync();
 
+            if (employees == null || !employees.Any())
+            {
+                TempData["error"] = "No records available to download.";
+                return RedirectToAction(nameof(GetEmp));
+            }
+
+            // Fetch all departments to create a lookup dictionary
+            var departments = await _departmentRepository.GetAllAsync();
+            var departmentDictionary = departments.ToDictionary(d => d.Dept_ID, d => d.Dept_Name);
+
+            var csv = new StringBuilder();
+
+            // Add header line
+            csv.AppendLine("Emp ID,First Name,Last Name,Department,Grade,Gender,Marital Status,Date of Birth,Date of Joining,Basic Salary,Designation,Home Address,Contact Number");
+
+            foreach (var employee in employees)
+            {
+                // Use the department ID to get the department name
+                var departmentName = departmentDictionary.ContainsKey(employee.Emp_Dept_ID)
+                    ? departmentDictionary[employee.Emp_Dept_ID]
+                    : "NA";
+
+                // Create CSV line with "NA" for missing or null values
+                var csvLine = $"{employee.Emp_ID ?? "NA"}," +
+                              $"{employee.Emp_First_Name ?? "NA"}," +
+                              $"{employee.Emp_Last_Name ?? "NA"}," +
+                              $"{departmentName}," +
+                              $"{employee.Emp_Grade ?? "NA"}," +
+                              $"{employee.Emp_Gender ?? "NA"}," +
+                              $"{employee.Emp_Marital_Status ?? "NA"}," +
+                              $"{(employee.Emp_Date_of_Birth != default(DateTime) ? employee.Emp_Date_of_Birth.ToString("yyyy-MM-dd") : "NA")}," +
+                              $"{(employee.Emp_Date_of_Joining != default(DateTime) ? employee.Emp_Date_of_Joining.ToString("yyyy-MM-dd") : "NA")}," +
+                              $"{employee.Emp_Basic.ToString() ?? "NA"}," +
+                              $"{employee.Emp_Designation ?? "NA"}," +
+                              $"{employee.Emp_Home_Address ?? "NA"}," +
+                              $"{employee.Emp_Contact_Num ?? "NA"}";
+
+                csv.AppendLine(csvLine);
+            }
+
+            var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
+            var stream = new MemoryStream(csvBytes);
+            return File(stream, "text/csv", "employees.csv");
+        }
 
     }
 }

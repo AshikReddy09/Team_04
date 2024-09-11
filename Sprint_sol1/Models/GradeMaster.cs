@@ -17,7 +17,16 @@ namespace Sprint_sol1.Models
         public int Min_Salary { get; set; }
         [Required]
         public int Max_Salary { get; set; }
-       // public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        // public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public ValidationResult Validate()
+        {
+            if (Max_Salary <= Min_Salary)
+            {
+                return new ValidationResult("Max Salary must be greater than Min Salary.");
+            }
+
+            return ValidationResult.Success;
+        }
     }
 
 }

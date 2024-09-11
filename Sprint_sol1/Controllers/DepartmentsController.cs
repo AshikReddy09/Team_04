@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Sprint_sol1.Contracts;
 using Sprint_sol1.Data;
 using Sprint_sol1.Models;
 
@@ -16,31 +17,34 @@ namespace Sprint_sol1.Controllers
     [ApiController]
     public class DepartmentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IGenericRepository<Department, int> _repository;
 
-        public DepartmentsController(ApplicationDbContext context)
+
+
+        public DepartmentsController(IGenericRepository<Department, int> repository)
         {
-            _context = context;
+            _repository = repository;
         }
+
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-            var users = await _context.Departments.ToListAsync();
+            var users = await _repository.GetAllAsync();
             if (users == null)
                 return View();
             return View(users);
         }
-        [Authorize(Roles = "Employee")]
+
         [HttpGet("Details/{id}")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Dept_ID == id);
+            var department = await _repository.GetByIdAsync(id);
+
             if (department == null)
             {
                 return NotFound();
@@ -58,20 +62,26 @@ namespace Sprint_sol1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] Department department)
         {
+            if (await _repository.ExistsAsync(department.Dept_ID))
+            {
+                TempData["ErrorMessage"] = "The specified Dept ID  exist.";
+                return View(department);
+            }
+
+
             if (ModelState.IsValid)
             {
-                _context.Departments.Add(department);
-                await _context.SaveChangesAsync();
+
+                await _repository.AddAsync(department);
                 TempData["success"] = "Record created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View();
         }
-
         [HttpGet("Edit/{id}")]
         public async Task<ActionResult<Department>> Edit(int id)
         {
-            var dept = await _context.Departments.FindAsync(id);
+            var dept = await _repository.GetByIdAsync(id);
 
             if (dept == null)
             {
@@ -90,34 +100,36 @@ namespace Sprint_sol1.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    await _repository.UpdateAsync(department);
                     TempData["warning"] = "Record updated successfully";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DepartmentExists(department.Dept_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _repository.ExistsAsync(department.Dept_ID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+
         }
+
 
         [HttpGet("Delete/{id}")]
         public async Task<ActionResult<Department>> Delete(int id)
         {
-            var dept = await _context.Departments.FindAsync(id);
+            var dept = await _repository.GetByIdAsync(id);
 
             if (dept == null)
             {
@@ -131,21 +143,17 @@ namespace Sprint_sol1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteDept(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
+            var department = await _repository.GetByIdAsync(id);
+            if (department == null)
             {
-                _context.Departments.Remove(department);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
             TempData["error"] = "Record deleted successfully";
-
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(int id)
-        {
-            return _context.Departments.Any(e => e.Dept_ID == id);
-        }
+
     }
 }
