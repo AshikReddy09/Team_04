@@ -1,6 +1,7 @@
 ﻿@model GradeMaster
 
 @{
+    var errorMessage = TempData["ErrorMessage"] as string;
     Layout = "_Layout_Alt1";
 }
 <html>
@@ -15,6 +16,26 @@
 
     </head>
     <body>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["success"]
+        </div>
+    }
+
+    @if (TempData["warning"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["warning"]
+        </div>
+    }
     <div class="container">
         <div class="row">
             <div class="col-md-12">

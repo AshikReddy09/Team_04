@@ -4,6 +4,22 @@
     Layout = "_Layout_Alt1";
 }
 
+
+
+ 
+@* @if (!string.IsNullOrEmpty(errorMessage))
+{
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+} *@
+
+
+
+
+
+
 <html>
     <head>
     <meta charset="utf-8" />
@@ -22,6 +38,35 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["success"]
+        </div>
+    }
+
+    @if (TempData["warning"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["warning"]
+        </div>
+    }
+
+
+
+
+
+
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">

@@ -16,7 +16,7 @@ namespace Sprint_sol1.Migrations
                 columns: table => new
                 {
                     Dept_ID = table.Column<int>(type: "int", nullable: false)
-                        ,
+                       ,
                     Dept_Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>

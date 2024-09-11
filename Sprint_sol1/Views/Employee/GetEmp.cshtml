@@ -1,4 +1,4 @@
-﻿@model List<Employee>
+﻿@model IEnumerable<dynamic>
 @{
     Layout = "_Layout_Alt1";
 }
@@ -32,26 +32,36 @@
                     <i class="bi bi-download"></i> Export to CSV
                 </a>
             </div>
-        </div>
+            </div>
         <hr />
         @if (Model != null && Model.Any())
         {
             <table id="table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center">Emp ID</th>
-                        <th class="text-center">First Name</th>
-                        <th class="text-center">Last Name</th>
+                            <th class="text-center">Emp ID</th>
+                            <th class="text-center">First Name</th>
+                            <th class="text-center">Last Name</th>
+                            <th class="text-center">Department</th>
+                            <th class="text-center">Grade</th>
+                            <th class="text-center">Gender</th>
+                            <th class="text-center">Marital Status</th>
+                            
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach (var item in Model)
                     {
                         <tr>
                             <td>@item.Emp_ID</td>
                             <td>@item.Emp_First_Name</td>
                             <td>@item.Emp_Last_Name</td>
+                            <td>@item.DepartmentName</td>
+                            <td>@item.Emp_Grade</td>
+                                <td>@item.Emp_Gender</td>
+                                <td>@item.Emp_Marital_Status</td>
                             <td class="d-flex align-items-center justify-content-center">
                                 <div class="w-75 btn-group" role="group">
                                     <a asp-controller="Employee" asp-action="Details" asp-route-id="@item.Emp_ID"
@@ -81,17 +91,25 @@
                         <h2 class="text-center text-uppercase text-warning pt-4">No Records found </h2>
                     </div>
                 </div>
+
             </div>
         }
     </div>
 
     @section Scripts {
         <script>
-            $('.table').DataTable();
+            $(document).ready(function () {
+                $('#table').DataTable({
+                    "paging": true,        // Enable pagination
+                    "searching": true,     // Enable searching
+                    "ordering": true,      // Enable sorting
+                    "lengthMenu": [[10, -1], [10, "All"]], // Options for page length
+                    "pageLength": 10,      // Default page length
+                });
+            });
         </script>
+
     }
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
 </body>
 </html>

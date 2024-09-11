@@ -9,6 +9,8 @@ namespace Sprint_sol1.Models
     {
         [Key]
         [ForeignKey("UserMaster")]
+        [RegularExpression(@"^[a-zA-Z][a-zA-Z0-9]*$|^[1-9][a-zA-Z0-9]*$", ErrorMessage = "empID should not start with 0 and Should be length of minimum 6")]
+        [StringLength(6, MinimumLength = 6)]
         public string Emp_ID { get; set; } = String.Empty;
 
 
