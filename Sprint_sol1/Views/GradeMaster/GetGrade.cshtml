@@ -14,30 +14,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     </head>
     <body>
+
     <div class="container">
         <div class="row mb-4">
             <div class="col-md-6 text-uppercase">
                 <h1> Grades List </h1>
             </div>
             <div class="col-md-6 text-end">
-                <a href="@Url.Action("Dashboard", "AdminDashboard")" class="btn btn-secondary me-2">
-                    <i class="bi bi-arrow-left-circle"></i> Back
-                </a>
                 <a asp-controller="GradeMaster" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create</a>
             </div>
         </div>
         <hr />
         @if (Model != null && Model.Any())
         {
-            <table id="table" class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center">Grade Code</th>
-                        <th class="text-center">Description</th>
-                        <th class="text-center">Min Salary </th>
-                        <th class="text-center">Max Salary </th>
-
-                        <th class="text-center">Actions</th>
+                        <th>Grade Code</th>
+                        <th>Description</th>
+                        <th>Min Salary </th>
+                        <th>Max Salary </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,12 +79,6 @@
             </div>
         }
     </div>
-
-    @section Scripts {
-        <script>
-            $('.table').DataTable();
-        </script>
-    }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dis<a href=" c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml">c:\users\ashreddy\documents\team_04\ems\sprint_sol1\sprint_sol1\views\home\contact.cshtml</a>t/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

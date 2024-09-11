@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Sprint_sol1.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Text;
 
 
 namespace Sprint_sol1.Controllers
@@ -61,6 +62,28 @@ namespace Sprint_sol1.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpGet("ExportToCsv")]
+        public async Task<IActionResult> ExportToCsv()
+        {
+            var employees = await _context.Employees.ToListAsync();
+
+            if (employees == null || !employees.Any())
+            {
+                return NotFound();
+            }
+            var csv = new StringBuilder();
+            csv.AppendLine("Emp ID,First Name,Last Name");
+
+            foreach (var employee in employees)
+            {
+                csv.AppendLine($"{employee.Emp_ID},{employee.Emp_First_Name},{employee.Emp_Last_Name}");
+            }
+
+            var csvBytes = Encoding.UTF8.GetBytes(csv.ToString());
+            var stream = new MemoryStream(csvBytes);
+            return File(stream, "text/csv", "employees.csv");
         }
 
         // POST: Employees/Create
