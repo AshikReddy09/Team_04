@@ -1,0 +1,21 @@
+﻿@model Sprint_sol1.Models.FileUploadViewModel
+@{
+    ViewData["Title"] = "File Upload";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Upload" asp-controller="FileUpload" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Select CSV File:</label>
+        <input type="file" id="file" name="file" accept=".csv" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+@if (ViewBag.UploadResult != null)
+{
+    <div class="alert alert-info mt-3">
+        @ViewBag.UploadResult
+    </div>
+}

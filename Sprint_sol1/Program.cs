@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Sprint_sol1.Contracts;
 using Sprint_sol1.Data;
+using Sprint_sol1.Repository;
+using Sprint_sol1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -29,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>)); // Repository configuration
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<IAzureStorage, AzureStorage>();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

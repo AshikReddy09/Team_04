@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Sprint_sol1.Models.BlobDto>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uploaded Files</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Uploaded Files</h1>
+
+        @if (Model.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var blob in Model)
+                    {
+                        <tr>
+                            <td>@blob.Name</td>
+                            <td><a href="@blob.Uri" target="_blank">@blob.Uri</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No files found.</p>
+        }
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
